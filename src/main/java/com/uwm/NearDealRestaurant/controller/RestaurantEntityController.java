@@ -1,18 +1,20 @@
 package com.uwm.NearDealRestaurant.controller;
 
+import com.uwm.NearDealRestaurant.entity.AuthRequest;
 import com.uwm.NearDealRestaurant.entity.RestaurantEntity;
+import com.uwm.NearDealRestaurant.security.JwtService;
 import com.uwm.NearDealRestaurant.service.AsyncService;
 import com.uwm.NearDealRestaurant.service.RestaurantEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/restaurant")
+@CrossOrigin(origins = "http://localhost:5173")
 public class RestaurantEntityController {
 
     @Autowired
@@ -20,6 +22,14 @@ public class RestaurantEntityController {
 
     @Autowired
     private AsyncService asyncService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+
+    @Autowired
+    private JwtService jwtService;
+
 
     @GetMapping("/getByName/{resName}")
     public RestaurantEntity getRestaurantByName(@PathVariable String resName) {
@@ -32,10 +42,10 @@ public class RestaurantEntityController {
     }
 
 
-    @PostMapping("/addRestaurant")
-    public ResponseEntity<?> saveRestaurant(@RequestBody RestaurantEntity restaurantEntity) {
-        return new ResponseEntity<>(restaurantEntityService.addRestaurant(restaurantEntity), HttpStatus.CREATED);
-    }
+//    @PostMapping("/addRestaurant")
+//    public ResponseEntity<?> saveRestaurant(@RequestBody RestaurantEntity restaurantEntity) {
+//        return new ResponseEntity<>(restaurantEntityService.addRestaurant(restaurantEntity), HttpStatus.CREATED);
+//    }
 
     @GetMapping("/run")
     public String runAsyncTask() {
@@ -46,8 +56,30 @@ public class RestaurantEntityController {
         return "Final task";
     }
 
+    @GetMapping("/login")
+    public String loginTest(@RequestParam String email, @RequestParam String password) {
+        if (email.isEmpty() || password.isEmpty())
+            return "fail";
+        else
+            return "success";
 
+    }
 
+    @PostMapping("/generateToken")
+    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+        );
+        if (authentication.isAuthenticated()) {
+            return jwtService.generateToken(authRequest.getUsername());
+        } else {
+            throw new UsernameNotFoundException("Invalid user request!");
+        }
+    }
 }
+
+
+
+
 
 

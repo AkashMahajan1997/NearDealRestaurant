@@ -13,74 +13,73 @@ public class AsyncService {
 
     private static final Logger logger = LoggerFactory.getLogger(AsyncService.class);
 
-    @Async("customExecutor")
-    public void executeAsyncTask() {
-        logger.info("Stating task in thread :- " + Thread.currentThread().getName());
-        try {
-            Thread.sleep(3000);
-            } catch (InterruptedException exception) {
-            Thread.currentThread().interrupt();
-        }
-        logger.info("task completed");
-
-    }
-
-    // practice completable future
-
-    public void test(){
-         CompletableFuture.runAsync(()->{
-            System.out.println("Asynchronous task started "+Thread.currentThread().getName());
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException exception) {
-                Thread.currentThread().interrupt();
-            }
-            logger.info("task completed"+Thread.currentThread().getName());
-        }).join();
-    }
-
-    public CompletableFuture<String> processPayment(String productId){
-            return CompletableFuture.supplyAsync(()->{
-                System.out.println("In process payment " +productId+" - "+Thread.currentThread().getName());
-                try {
-                    Thread.currentThread().sleep(2000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                return "payment success";
-
-            });
-    }
-
-
     // Step 2: Inventory Service
     private static CompletableFuture<String> checkInventory(String productId) {
         return CompletableFuture.supplyAsync(() -> {
             System.out.println("Checking inventory for Product: " + productId);
             try {
-                Thread.currentThread().sleep(2000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
-            }            return "Product Available";
+            }
+            return "Product Available";
         });
     }
+
+    // practice completable future
 
     // Step 3: Shipping Service
     private static CompletableFuture<String> generateShippingLabel(String orderId) {
         return CompletableFuture.supplyAsync(() -> {
             System.out.println("Generating Shipping Label for Order: " + orderId);
             try {
-                Thread.currentThread().sleep(2000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
-            }            return "Shipping Label Generated";
+            }
+            return "Shipping Label Generated";
         });
     }
 
+    @Async("customExecutor")
+    public void executeAsyncTask() {
+        logger.info("Stating task in thread :- " + Thread.currentThread().getName());
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+        }
+        logger.info("task completed");
 
+    }
+
+    public void test() {
+        CompletableFuture.runAsync(() -> {
+            System.out.println("Asynchronous task started " + Thread.currentThread().getName());
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
+            }
+            logger.info("task completed" + Thread.currentThread().getName());
+        }).join();
+    }
+
+    public CompletableFuture<String> processPayment(String productId) {
+        return CompletableFuture.supplyAsync(() -> {
+            System.out.println("In process payment " + productId + " - " + Thread.currentThread().getName());
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return "payment success";
+
+        });
+    }
 
     //learn mono and flux
-    public void testingMonoAndFLux(){
+    public void testingMonoAndFLux() {
         Mono<String> mono = Mono.just("hello");
         mono.subscribe(System.out::println);
     }
