@@ -3,6 +3,7 @@ package com.uwm.NearDealRestaurant.entity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,10 +14,11 @@ public class UserInfoDetails implements UserDetails {
     private final String username; // Changed from 'name' to 'email' for clarity
     private final String password;
     private final List<GrantedAuthority> authorities;
+    private BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
 
     public UserInfoDetails(UserInfo userInfo) {
         this.username = userInfo.getEmail(); // Use email as username
-        this.password = userInfo.getPassword();
+        this.password = encoder.encode(userInfo.getPassword());
         this.authorities = Arrays.stream(userInfo.getRoles().split(","))
                 .map(String::trim) // optional: removes leading/trailing spaces
                 .map(SimpleGrantedAuthority::new)
@@ -30,7 +32,7 @@ public class UserInfoDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override

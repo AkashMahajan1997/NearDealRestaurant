@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/restaurant")
+@RequestMapping()
 @CrossOrigin(origins = "http://localhost:5173")
 public class RestaurantEntityController {
 
@@ -74,6 +74,18 @@ public class RestaurantEntityController {
             return jwtService.generateToken(authRequest.getUsername());
         } else {
             throw new UsernameNotFoundException("Invalid user request!");
+        }
+    }
+
+    @PostMapping("/authenticate")
+    public String generateToken(@RequestBody AuthRequest authRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+        );
+        if (authentication.isAuthenticated()) {
+            return jwtService.generateToken(authRequest.getUsername());
+        } else {
+            throw new RuntimeException("Invalid credentials");
         }
     }
 }
