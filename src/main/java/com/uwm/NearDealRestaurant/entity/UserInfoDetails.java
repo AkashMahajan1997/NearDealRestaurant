@@ -14,7 +14,7 @@ public class UserInfoDetails implements UserDetails {
     private final String username; // Changed from 'name' to 'email' for clarity
     private final String password;
     private final List<GrantedAuthority> authorities;
-    private BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public UserInfoDetails(UserInfo userInfo) {
         this.username = userInfo.getEmail(); // Use email as username

@@ -15,13 +15,13 @@ public class RestaurantEntityService {
         return restaurantEntityRepository.findByResName(resName);
     }
 
-//    public RestaurantEntity addRestaurant(RestaurantEntity restaurantEntity) {
-//        return restaurantEntityRepository.save(new RestaurantEntity(restaurantEntity.getResId(),restaurantEntity.getResName()));
-//    }
+    public RestaurantEntity addRestaurant(RestaurantEntity restaurantEntity) {
+        return restaurantEntityRepository.save(restaurantEntity);
+    }
 
 
-    public RestaurantEntity getRestaurantById(String resId) {
-        return restaurantEntityRepository.findById(resId).get();
+    public RestaurantEntity getRestaurantById(String id) {
+        return restaurantEntityRepository.findById(id).get();
     }
 
 
