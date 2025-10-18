@@ -40,8 +40,6 @@ public class RestaurantEntityController {
     public RestaurantEntity getRestaurantById(@PathVariable String resId) {
         return restaurantEntityService.getRestaurantById(resId);
     }
-
-
     @PostMapping("/addRestaurant")
     public ResponseEntity<?> saveRestaurant(@RequestBody RestaurantEntity restaurantEntity) {
         return new ResponseEntity<>(restaurantEntityService.addRestaurant(restaurantEntity), HttpStatus.CREATED);
@@ -55,9 +53,9 @@ public class RestaurantEntityController {
         return "Final task";
     }
 
-    @GetMapping("/login")
-    public String loginTest(@RequestParam String email, @RequestParam String password) {
-        if (email.isEmpty() || password.isEmpty())
+    @PostMapping("/login")
+    public String loginTest(@RequestBody AuthRequest authRequest) {
+        if (authRequest.getPassword().isEmpty() || authRequest.getUsername().isEmpty())
             return "fail";
         else
             return "success";
