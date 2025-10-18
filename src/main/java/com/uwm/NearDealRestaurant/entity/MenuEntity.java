@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "MenuEntity")
 public class MenuEntity {
 
+    @Id
     private String menuId;
 
     private String menuType;

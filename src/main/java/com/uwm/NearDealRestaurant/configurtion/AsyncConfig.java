@@ -8,7 +8,6 @@ import java.util.concurrent.Executor;
 
 @Configuration
 public class AsyncConfig {
-
     @Bean(name = "customExecutor")
     public Executor customExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -19,5 +18,4 @@ public class AsyncConfig {
         executor.initialize();
         return executor;
     }
-
 }
