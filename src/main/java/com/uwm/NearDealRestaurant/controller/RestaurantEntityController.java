@@ -5,6 +5,7 @@ import com.uwm.NearDealRestaurant.entity.RestaurantEntity;
 import com.uwm.NearDealRestaurant.entity.UserInfo;
 import com.uwm.NearDealRestaurant.repository.UserInfoRepository;
 import com.uwm.NearDealRestaurant.security.JwtService;
+import com.uwm.NearDealRestaurant.service.AdminService;
 import com.uwm.NearDealRestaurant.service.AsyncService;
 import com.uwm.NearDealRestaurant.service.RestaurantEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,16 +21,21 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:5173")
 public class RestaurantEntityController {
 
-    @Autowired
-    UserInfoRepository userInfoRepository;
-    @Autowired
-    private RestaurantEntityService restaurantEntityService;
-    @Autowired
-    private AsyncService asyncService;
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private JwtService jwtService;
+
+    private final RestaurantEntityService restaurantEntityService;
+    private final AsyncService asyncService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+
+    private final AdminService adminService;
+
+    public RestaurantEntityController(RestaurantEntityService restaurantEntityService, AsyncService asyncService, AuthenticationManager authenticationManager, JwtService jwtService, AdminService adminService) {
+        this.restaurantEntityService = restaurantEntityService;
+        this.asyncService = asyncService;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+        this.adminService = adminService;
+    }
 
     @GetMapping("/getByName/{resName}")
     public RestaurantEntity getRestaurantByName(@PathVariable String resName) {
@@ -64,7 +70,7 @@ public class RestaurantEntityController {
 
     @PostMapping("/addUser")
     public UserInfo creteUser(@RequestBody UserInfo userInfo) {
-        return userInfoRepository.save(userInfo);
+        return adminService.addUser(userInfo);
     }
 
     @PostMapping("/authenticate")
