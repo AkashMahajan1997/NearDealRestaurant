@@ -16,6 +16,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping()
 @CrossOrigin(origins = "http://localhost:5173")
@@ -46,9 +48,9 @@ public class RestaurantEntityController {
     public RestaurantEntity getRestaurantById(@PathVariable String resId) {
         return restaurantEntityService.getRestaurantById(resId);
     }
-    @PostMapping("/addRestaurant")
-    public ResponseEntity<?> saveRestaurant(@RequestBody RestaurantEntity restaurantEntity) {
-        return new ResponseEntity<>(restaurantEntityService.addRestaurant(restaurantEntity), HttpStatus.CREATED);
+    @PostMapping("/restaurant/add")
+    public String saveRestaurant() {
+        return "test";
     }
 
     @GetMapping("/run")
@@ -69,8 +71,11 @@ public class RestaurantEntityController {
     }
 
     @PostMapping("/addUser")
-    public UserInfo creteUser(@RequestBody UserInfo userInfo) {
-        return adminService.addUser(userInfo);
+    public ResponseEntity<?> creteUser(@RequestBody UserInfo userInfo) {
+       if(adminService.getUserByEmail(userInfo.getEmail()))
+       return new  ResponseEntity<>(adminService.addUser(userInfo),HttpStatus.CREATED);
+       else
+           return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/authenticate")
